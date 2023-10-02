@@ -35,12 +35,6 @@ The activation function decides whether a neuron should be activated or not by c
 
 The output can be a single value or multiple values.
 
-
-
-
-
-
-
 ## References
 - Géron, A. (2019) Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Ed., O'Reilly Media
 - [Please Stop Drawing Neural Networks Wrong](https://towardsdatascience.com/please-stop-drawing-neural-networks-wrong-ffd02b67ad77)
