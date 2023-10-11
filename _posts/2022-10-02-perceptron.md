@@ -5,6 +5,8 @@ A Perceptron is an artificial neuron(based on the idea of biological neurons); t
 The pereptron is a mathematical function that performs computations to detect features or patterns in the input data.
 The function can be represented as shown below.
 
+![Weights and Biases](perceptron.jpg)
+
 1\.  Input values
 
 The input values are the features in our dataset. n represents the total number of features and X represents the value of the feature(rows).
