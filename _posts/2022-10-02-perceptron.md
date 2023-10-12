@@ -5,7 +5,7 @@ A Perceptron is an artificial neuron(based on the idea of biological neurons); t
 The perceptron is a mathematical function that performs computations to detect features or patterns in the input data.
 The function can be represented as shown below.
 
-![Weights and Biases](.\perceptron.jpg)
+![Weights and Biases](_posts/perceptron.jpg)
 
 1\.  Input values
 
