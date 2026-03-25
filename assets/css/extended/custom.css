@@ -1,0 +1,8 @@
+/* ── KaTeX math rendering support ── */
+/* Loaded via extend_head.html partial  */
+
+/* optional: slightly tighten display math spacing */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
