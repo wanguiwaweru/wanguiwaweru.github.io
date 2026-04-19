@@ -1,6 +1,8 @@
 baseURL: "https://wanguiwaweru.github.io/"
 title: "Node & Vector"
 theme: PaperMod
+mainsections:              
+  - "posts"
 
 pagination:
   pagerSize: 10
