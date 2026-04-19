@@ -6,3 +6,46 @@
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+/* ── Claude-inspired cream light theme ── */
+[data-theme="light"] {
+  --theme: #f2e0b5; /* Cream background */
+  --entry: #FAF7F0; /* Entry background */
+  --primary: #2D2A26; /* Dark text */
+  --secondary: #5C5A56; /* Secondary text */
+  --tertiary: #8B8985; /* Tertiary text */
+  --content: #2D2A26; /* Content text */
+  --code-bg: #F0EDE7; /* Code background */
+  --border: #E8E5DF; /* Border color */
+}
+
+/* Override body background for light theme */
+[data-theme="light"] body {
+  background-color: #FAF7F0 !important;
+}
+
+/* Override main content background */
+[data-theme="light"] .main {
+  background-color: #FAF7F0 !important;
+}
+
+/* Override post content background */
+[data-theme="light"] .post-content {
+  background-color: #FAF7F0 !important;
+}
+
+/* Override card backgrounds */
+[data-theme="light"] .card {
+  background-color: #F8F5EF !important;
+  border-color: #E8E5DF !important;
+}
+
+/* Override header background */
+[data-theme="light"] header {
+  background-color: #FAF7F0 !important;
+}
+
+/* Override footer background */
+[data-theme="light"] footer {
+  background-color: #FAF7F0 !important;
+}

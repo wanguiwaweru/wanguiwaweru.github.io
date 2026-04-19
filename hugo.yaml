@@ -1,5 +1,5 @@
 baseURL: "https://wanguiwaweru.github.io/"
-title: "Your Blog Name"
+title: "Node & Vector"
 theme: PaperMod
 
 pagination:
@@ -16,10 +16,10 @@ minify:
 
 params:
   env: production
-  title: "Your Blog Name"
-  description: "Your blog description here."
+  title: "Node & Vector"
+  description: "My learning notes."
   keywords: [Blog, AI, Machine Learning]
-  author: "Your Name"
+  author: "Bernice Wangui "
   DateFormat: "January 2, 2006"
   defaultTheme: auto        # auto = follows system preference; or: dark / light
   disableThemeToggle: false
@@ -45,8 +45,7 @@ params:
     Title: "Hi there 👋"
     Content: |
       Welcome to my blog. I write about machine learning, research notes, and
-      whatever I find interesting. Posts are my personal learning notes —
-      written to help me understand things better.
+      whatever I find interesting. Posts are my personal learning notes to help me understand things better.
 
   # ── Social icons shown on home page ─────────────────────────────────────
   socialIcons:
@@ -62,12 +61,6 @@ params:
     hidden: true
     hiddenInList: true
     hiddenInSingle: true
-
-  # ── Edit post link (optional — links to GitHub source) ───────────────────
-  editPost:
-    URL: "https://github.com/YOUR-USERNAME/YOUR-USERNAME.github.io/edit/main/content"
-    Text: "Suggest Changes"
-    appendFilePath: true
 
   # ── Fuse.js search options ────────────────────────────────────────────────
   fuseOpts:
