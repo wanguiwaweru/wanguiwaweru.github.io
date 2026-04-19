@@ -1,3 +1,9 @@
+---
+title: "Information Retrieval"
+date: "2024-01-03"
+draft: true
+---
+
 # Information Retrieval
 Information retrieval (IR) is the science and process of obtaining relevant information from large collections of unstructured or semi-structured data, such as documents, images, and videos. 
 
