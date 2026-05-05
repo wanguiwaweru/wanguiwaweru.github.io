@@ -1,7 +1,8 @@
 ---
 title: "Information Retrieval"
-date: "2024-01-03"
+date: "2026-04-03"
 draft: false
+math: true
 ---
 
 # Information Retrieval
