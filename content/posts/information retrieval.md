@@ -1,7 +1,7 @@
 ---
 title: "Information Retrieval"
 date: "2024-01-03"
-draft: true
+draft: false
 ---
 
 # Information Retrieval
