@@ -122,7 +122,7 @@ print(x.grad)  # Outputs: tensor(6.)
 2. Handles Dynamic Models: Because the graph is recreated every iteration, you can safely use Python loops, if conditions, and varying tensor shapes in your model.
 3. Memory Control: You can wrap evaluation or inference code in a with torch.no_grad(): block. This stops Autograd from building graphs, which reduces memory usage and speeds up performance.
 
-### Device Management
+## Device Management
 Use `torch.device` to specify the device (CPU or GPU) on which tensors should be allocated. 
 
 > Note that this means the tensor will be in the CPU RAM or GPU VRAM, and the operations on the tensor will be performed on the respective device. At this point you have not yet touched the GPU or CPU, you have just created a small object describing which compute device you want to use for the tensor. The actual data will be allocated on the specified device when you create the tensor or move it to that device.
@@ -169,14 +169,98 @@ For efficient device management:
 - Only move tensors to the GPU when necessary to avoid increasing costs for tasks that don't require GPU acceleration, and consider using `non_blocking=True` for faster data transfer.
 - Dynamically check for GPU availability using `torch.cuda.is_available()` and set the device accordingly to ensure your code can run on both CPU and GPU environments without modification.
 
-### Working with Multiple GPUs
-PyTorch provides several ways to work with multiple GPUs, including `torch.nn.DataParallel` and `torch.nn.parallel.DistributedDataParallel`. These modules allow you to parallelize your model across multiple GPUs, enabling faster training and inference.
+## Working with Multiple GPUs
+Multiple GPUs may be needed to make the model training or inference process faster where one GPU is not sufficient to handle the computational load. 
+
+- When the model is too large to fit into the memory of a single GPU, you can use multiple GPUs to distribute the model across them. This is often done using techniques like `model parallelism`, where different parts of the model are placed on different GPUs.
+> Running a large model (e.g., 32 Billion parameters or larger) can easily exceed 60-90GB of VRAM, making 2 to 4 GPUs necessary. The memory required for training can be even higher than for inference when you consider the additional memory needed for activations, gradients, and optimizer states.
+
+- When the dataset is too large to fit into the memory of a single GPU, you can use multiple GPUs to distribute the data across them. This is often done using techniques like `data parallelism`, where the same model is replicated across multiple GPUs and each GPU processes a different portion of the data.  
+> This reduces the time it takes to train the model by allowing multiple GPUs to work in parallel on different batches of data.Think map reduce: each GPU processes a portion of the data and computes gradients, which are then averaged across all GPUs to update the model parameters.
+
+
+### Distributed Data Parallel (DDP)
+
+[Refresh a little on Map Reduce](.mapreduce.md)
+
+This technique is used to train a model across multiple GPUs and/or multiple machines. It involves replicating the model on each GPU and synchronizing the gradients during the backward pass to ensure that all replicas are updated consistently.
+
+1. Model is replicated across multiple GPUs, with each GPU having its own copy of the model parameters. Note that the model is replicated, not the data ie. each GPU has its own copy of the model. Each GPU processes a different portion of the data, and the gradients are averaged across all GPUs to update the model parameters.
+2. The input data is divided into smaller batches and distributed across multiple GPUs. 
+3. Each GPU processes its portion of the data and computes gradients independently.
+4. The gradients from all GPUs are synchronized and averaged to update the model parameters.
+5. Model parameters are updated based on the averaged gradients, ensuring that all replicas of the model in all GPUs are updated consistently.
+
+
+DDP works well for models that can fit into the memory of a single GPU, but it may not be suitable for very large models that exceed the memory capacity of a single GPU. In such cases, you will get Out of Memory (OOM) errors.
+
+To handle larger models,techniques like Fully Sharded Data Parallel (FSDP) can be used to shard the model parameters across multiple GPUs, allowing for training larger models that may not fit into the memory of a single GPU.
+
+### Fully Sharded Data Parallel (FSDP)
+This technique is used to train a model across multiple GPUs and/or multiple machines by sharding the model parameters across the GPUs. Each GPU holds only a portion of the model parameters, and the gradients are synchronized during the backward pass to ensure that all shards are updated consistently.
+
+1. The model parameters are sharded across multiple GPUs, with each GPU holding only a portion of the model parameters. This allows for training larger models that may not fit into the memory of a single GPU.
+2. The input data is divided into smaller batches and distributed across multiple GPUs.
+3. Each GPU processes its portion of the data and computes gradients independently.
+4. The gradients from all GPUs are synchronized and averaged to update the model parameters.
+5. Model parameters are updated based on the averaged gradients, ensuring that all shards of the model in all GPUs are updated consistently.
+
+### Communication backends
+PyTorch provides several communication backends for distributed training, including:
+
+1. NCCL (NVIDIA Collective Communications Library)
+    - NCCL (pronounced "Nickel") is the industry standard for multi-GPU setups using NVIDIA hardware.
+    - Performance: It delivers the fastest communication speeds. It automatically detects your hardware topology and utilizes high-speed interconnects like NVLink, NVSwitch, PCIe, and InfiniBand.
+    - Operations: Fully supports collective operations like `all_reduce` (crucial for gradient synchronization in DistributedDataParallel), `broadcast`, `all_gather`, and `reduce`.
+    - Limitation: It strictly requires NVIDIA CUDA-enabled GPUs; it cannot process CPU tensors directly.
+
+2. RCCL (ROCm Communication Collectives Library)
+    - RCCL is the direct equivalent of NCCL, optimized specifically for AMD GPUs.
+    - Performance: It is designed to maximize throughput over AMD’s Infinity Fabric interconnects.
+    - Usage: PyTorch switches to RCCL automatically behind the scenes when compiled with AMD ROCm support instead of NVIDIA CUDA.
+
+3. Gloo
+    - Gloo was developed by Meta as a highly portable, cross-platform communication library.
+    - Multi-GPU Fit: Avoid using Gloo for actual GPU tensor communication. It is much slower than NCCL because it often routes GPU data through the host CPU memory.
+    - Best Use Case: It serves as an excellent fallback backend or a tool to handle lightweight metadata, key-value stores (TCPStore), and initialization coordination.
+
+4. MPI (Message Passing Interface)
+        - `mpi`: A communication library that provides support for distributed training using the Message Passing Interface (MPI) standard. It is commonly used in high-performance computing environments and can be used for distributed training on both CPU and GPU clusters.
+    - MPI is a traditional, widely accepted standard in High-Performance Computing (HPC) clusters.
+    - Multi-GPU Fit: Generally not recommended for modern PyTorch deep learning pipelines unless you are forced to use a specific legacy HPC infrastructure.
+    - Limitation: PyTorch binaries do not include MPI out of the box. You must manually build PyTorch from source to enable it.
+
+
+To initiate multi-GPU execution using the `torch.distributed` package, write the initialization sequence:
+
+
+```python
+import os
+import torch
+import torch.distributed as dist
+
+def setup(rank, world_size):
+    # Coordinate host addresses
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+
+    # Explicitly call "nccl" for NVIDIA multi-GPU clusters
+    dist.init_process_group(backend="nccl", rank=rank, world_size=world_size)
+    torch.cuda.set_device(rank)
+
+```
+
+
+
 
 # Resources
 - [PyTorch Documentation](https://pytorch.org/docs/stable/index.html)
 - [PyTorch Tutorials](https://pytorch.org/tutorials/)
 - [PyTorch for Deep Learning: A Gentle Introduction](https://www.youtube.com/watch?v=o5gPABcGZwc&t=399s)
 - [What are Float32, Float16 and BFloat16 Data Types?](https://www.youtube.com/watch?v=7q1Gh1KOlzw)
-
 - [PyTorch Pin Memory and Non-Blocking Transfers](https://docs.pytorch.org/tutorials/intermediate/pinmem_nonblock.html)
 - [What is the disadvantage of using pin_memory?](https://discuss.pytorch.org/t/what-is-the-disadvantage-of-using-pin-memory/1702)
+
+- [PyTorch Distributed Data Parallel (DDP) Tutorial](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
+
+- [Demystifying PyTorch Distributed Data Parallel (DDP)](https://medium.com/@arjunsrinivasan.a/demystifying-pytorch-distributed-data-parallel-ddp-an-inside-look-6d0d42a645ff)
