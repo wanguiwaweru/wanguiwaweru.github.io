@@ -1,6 +1,6 @@
 ---
 title: "MapReduce"
-date: 2026-06-15T12:00:00Z
+date: 2026-05-15
 draft: false
 ---
 
@@ -366,3 +366,6 @@ the [doc1, doc3]
 ```
 
 ---
+
+## Resources
+- [MIT GFS lecture](https://www.youtube.com/watch?v=EpIgvowZr00&list=PLrw6a1wE39_tb2fErI4-WkMbsvGQk9_UB&index=3)
