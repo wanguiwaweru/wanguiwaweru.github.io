@@ -1,3 +1,9 @@
+---
+title: "MapReduce"
+date: 2026-06-15T12:00:00Z
+draft: false
+---
+
 # MapReduce
 MapReduce is a programming model and implementation for processing large datasets in parallel across a distributed cluster. It's the foundation of Hadoop and was published by Google in 2004. The framework automatically handles parallelization, fault tolerance, and data distribution.
 
@@ -194,7 +200,7 @@ The combiner and reducer functions can be the same function especially in cases 
 MapReduce applies the principle of **data locality** where you move computation to data, not the data to computation. When scheduling a mapper task, it is scheduled to run on one of the nodes that stores that input block.
 
 - **Network is expensive**: Transferring data across the network is 100x slower than reading from local disk
-- **Hadoop's advantage**: Map Reducee is used in Hadoop and HDFS replicates each block to 3 nodes. Hadoop's scheduler can almost always find a mapper node that has the data
+- **Hadoop's advantage**: Map Reduce is used in Hadoop and HDFS replicates each block to 3 nodes. Hadoop's scheduler can almost always find a mapper node that has the data
 
 On Hadoop, the process is as follows:
 1. Hadoop checks which nodes have the block from HDFS metadata
