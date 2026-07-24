@@ -144,10 +144,8 @@ The system uses algorithms to compare the query with the index and calculate a r
 TF-IDF is used in information retrieval to evaluate the importance of a term in a document relative to a collection of documents.
 - **Term Frequency (TF)**: Measures how frequently a term appears in a document. It is calculated as the number of times a term appears in a document divided by the total number of terms in that document.
 
-$$
-tf = Number of times term t appears in a document / Total number of terms in the document
+$$tf = \frac{\text{Number of times term t appears in a document}}{\text{Total number of terms in the document}}$$
 
-$$
 ##### Zipf's Law
 Zipf's Law is an empirical observation about term frequency distributions in natural language that states that the frequency of a term is inversely proportional to its rank in the frequency table.
 > The most common word appears roughly twice as often as the second most common, three times as often as the third, and so on.
@@ -169,13 +167,12 @@ The long tail of rare terms is where most of the semantic meaning lives. IDF amp
 - **Inverse Document Frequency (IDF)**: Measures how important a term is across the entire collection of documents. It is calculated as the logarithm of the total number of documents divided by the number of documents containing the term. Using logarithm helps to dampen the effect of very common terms that appear in many documents and gives more weight to rarer terms that are more likely to be relevant to the query and avoids division by zero by adding 1 to the denominator.
 
 $$
-idf = log(Total number of documents / Number of documents containing term t)
-
+idf = \log\left(\frac{\text{Total number of documents}}{\text{Number of documents containing term } t}\right)
 $$
 The TF-IDF score for a term in a document is calculated by multiplying the term frequency (TF) by the inverse document frequency (IDF):
 
 $$
-tf-idf = tf * idf
+\mathrm{tf\text{-}idf} = \mathrm{tf} \cdot \mathrm{idf}
 $$
 
 #### BM25 (Best Matching 25)
@@ -183,8 +180,7 @@ BM25 is a ranking function used in information retrieval to estimate the relevan
 
 The BM25 score for a document with respect to a query is calculated using the formula:
 $$
-`BM25(D, Q) = ∑ (IDF(t) * ((TF(t, D) * (k1 + 1)) / (TF(t, D) + k1 * (1 - b + b * (|D| / avgDL)))))`
-
+\mathrm{BM25}(D, Q) = \sum_{t \in Q} \mathrm{IDF}(t) \cdot \frac{\mathrm{TF}(t, D) (k_1 + 1)}{\mathrm{TF}(t, D) + k_1 \left(1 - b + b \frac{|D|}{\mathrm{avgDL}}\right)}
 $$
 Where:
 - `D` is the document
@@ -537,6 +533,9 @@ Query expansion is most valuable in domains where vocabulary varies significantl
 
 In modern hybrid retrieval systems, dense retrieval already handles much of the semantic matching that expansion was designed to address — but PRF and LLM-based expansion remain useful as lightweight, complementary layers on top of any retrieval pipeline.
 
+## Scaling Information Retrieval
+### Query Federation
+Query federation is a technique used in information retrieval to combine results from multiple search engines or data sources into a single, unified result set. This approach allows users to access a broader range of information without having to query each source individually.
 
 ## Resources
 - [Introduction	to Information Retrieval & Web Search](https://www.cs.jhu.edu/~kevinduh/notes/jsalt19-kduh-IntroIR.pdf)
