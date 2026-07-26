@@ -41,7 +41,7 @@ params:
   hideSummary: false
   showtoc: true
   tocopen: false
-
+  math: true
   # ── Home page info block ──────────────────────────
   homeInfoParams:
     Title: "Hi there 👋"
